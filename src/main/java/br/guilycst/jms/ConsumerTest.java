@@ -19,7 +19,7 @@ public class ConsumerTest {
         Destination fila = (Destination) context.lookup("financeiro");
         MessageConsumer consumer = session.createConsumer(fila);
 
-        consumer.setMessageListener(new MessageListener() {
+        consumer.setMessageListener(new MessageListener() { // observer
             public void onMessage(Message message) {
                 TextMessage textMsg = (TextMessage) message;
                 try {
@@ -30,7 +30,8 @@ public class ConsumerTest {
             }
         });
 
-        new Scanner(System.in).nextLine();
+
+        new Scanner(System.in).nextLine(); // Just to block the execution
 
         connection.close();
         context.close();
