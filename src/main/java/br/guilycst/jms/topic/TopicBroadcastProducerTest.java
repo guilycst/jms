@@ -1,10 +1,10 @@
-package br.guilycst.jms;
+package br.guilycst.jms.topic;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
-import java.util.Scanner;
+import javax.naming.NamingException;
 
-public class ProducerTest {
+public class TopicBroadcastProducerTest {
 
     public static void main(String[] args) throws Exception {
         /*JMS 1.1*/
@@ -15,13 +15,11 @@ public class ProducerTest {
         connection.start();
 
         Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-        Destination queue = (Destination) context.lookup("financeiro");
-        MessageProducer producer = session.createProducer(queue);
+        Destination topic = (Destination) context.lookup("loja");
 
-        for (int i = 0; i < 1000; i++) {
-            TextMessage textMessage = session.createTextMessage("#" + i);
-            producer.send(textMessage);
-        }
+        MessageProducer producer = session.createProducer(topic);
+        TextMessage textMessage = session.createTextMessage("topic broadcast test");
+        producer.send(textMessage);
 
         connection.close();
         context.close();

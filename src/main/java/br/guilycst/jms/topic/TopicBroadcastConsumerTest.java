@@ -1,11 +1,10 @@
-package br.guilycst.jms;
+package br.guilycst.jms.topic;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.util.Scanner;
 
-public class ConsumerTest {
+public class TopicBroadcastConsumerTest {
 
     public static void main(String[] args) throws Exception {
         /*JMS 1.1*/
@@ -13,11 +12,12 @@ public class ConsumerTest {
         InitialContext context = new InitialContext();
         ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
         Connection connection = factory.createConnection();
+        connection.setClientID("estoque");
         connection.start();
 
         Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-        Destination queue = (Destination) context.lookup("financeiro");
-        MessageConsumer consumer = session.createConsumer(queue);
+        Topic topic = (Topic) context.lookup("loja");
+        MessageConsumer consumer = session.createDurableSubscriber(topic, "subscriber"); // a durable subscriber recieves messages sent when the consumer was offline
 
         consumer.setMessageListener(new MessageListener() { // observer
             public void onMessage(Message message) {

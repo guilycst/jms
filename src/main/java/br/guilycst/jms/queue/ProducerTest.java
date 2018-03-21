@@ -1,11 +1,10 @@
-package br.guilycst.jms;
+package br.guilycst.jms.queue;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
-import java.util.Enumeration;
 import java.util.Scanner;
 
-public class BrowserTest {
+public class ProducerTest {
 
     public static void main(String[] args) throws Exception {
         /*JMS 1.1*/
@@ -17,12 +16,11 @@ public class BrowserTest {
 
         Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
         Destination queue = (Destination) context.lookup("financeiro");
+        MessageProducer producer = session.createProducer(queue);
 
-        QueueBrowser browser = session.createBrowser((Queue) queue);
-
-        Enumeration enumeration = browser.getEnumeration();
-        while (enumeration.hasMoreElements()){
-            System.out.println(((TextMessage)enumeration.nextElement()).getText());
+        for (int i = 0; i < 1000; i++) {
+            TextMessage textMessage = session.createTextMessage("#" + i);
+            producer.send(textMessage);
         }
 
         connection.close();
