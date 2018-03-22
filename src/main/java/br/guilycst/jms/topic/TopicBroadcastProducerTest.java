@@ -20,7 +20,7 @@ public class TopicBroadcastProducerTest {
 
         MessageProducer producer = session.createProducer(topic);
 
-        Pedido pedido = new PedidoFactory().geraPedidoComValores();
+        Pedido pedido = new PedidoFactory().geraPedidoComValores(); // Canonical Data Model
         StringWriter writer = new StringWriter();
         JAXB.marshal(pedido, writer);
         String xml = writer.toString();
