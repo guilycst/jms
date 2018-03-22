@@ -1,15 +1,12 @@
-package br.guilycst.jms.topic;
+package br.guilycst.jms.topic.objectmessage;
 
 import br.guilycst.jms.SetupHelper;
 import br.guilycst.jms.model.Pedido;
 import br.guilycst.jms.model.PedidoFactory;
 
 import javax.jms.*;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.bind.JAXB;
 import java.io.StringWriter;
-import java.util.Optional;
 
 public class TopicBroadcastProducerTest {
 
@@ -21,11 +18,8 @@ public class TopicBroadcastProducerTest {
         MessageProducer producer = session.createProducer(topic);
 
         Pedido pedido = new PedidoFactory().geraPedidoComValores();
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(pedido, writer);
-        String xml = writer.toString();
 
-        Message textMessage = session.createTextMessage(xml);
+        Message textMessage = session.createObjectMessage(pedido);
 
         producer.send(textMessage);
 

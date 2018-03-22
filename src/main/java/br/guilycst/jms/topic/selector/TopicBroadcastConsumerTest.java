@@ -1,22 +1,19 @@
 package br.guilycst.jms.topic.selector;
 
+import br.guilycst.jms.SetupHelper;
+
 import javax.jms.*;
 import javax.naming.InitialContext;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class TopicBroadcastConsumerTest {
 
     public static void main(String[] args) throws Exception {
-        /*JMS 1.1*/
-        /* JNDI - Java Naming and Directory Interface - BEGIN*/
-        InitialContext context = new InitialContext();
-        ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-        Connection connection = factory.createConnection();
-        connection.setClientID("estoque");
-        connection.start();
 
+        Connection connection = SetupHelper.getConnection(Optional.of("estoque"));
         Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-        Topic topic = (Topic) context.lookup("loja");
+        Topic topic = SetupHelper.lookup("loja");
         MessageConsumer consumer = session.createDurableSubscriber(topic, "subscriber-selector", "ebook = true AND ebook is not null", true);
 
         consumer.setMessageListener(new MessageListener() { // observer
@@ -30,10 +27,8 @@ public class TopicBroadcastConsumerTest {
             }
         });
 
-
         new Scanner(System.in).nextLine(); // Just to block the execution
 
         connection.close();
-        context.close();
     }
 }

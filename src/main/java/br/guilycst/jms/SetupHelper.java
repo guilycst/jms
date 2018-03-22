@@ -43,7 +43,7 @@ public class SetupHelper {
         /*JMS 1.1*/
         /* JNDI - Java Naming and Directory Interface - BEGIN*/
         ConnectionFactory factory = lookup("ConnectionFactory");
-        Connection connection = factory.createConnection();
+        Connection connection = factory.createConnection("admin","senha");
         clientID.ifPresent(id -> {
             try {
                 connection.setClientID(id);

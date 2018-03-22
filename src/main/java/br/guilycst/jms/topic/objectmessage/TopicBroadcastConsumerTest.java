@@ -1,25 +1,25 @@
-package br.guilycst.jms.queue;
+package br.guilycst.jms.topic.objectmessage;
 
 import br.guilycst.jms.SetupHelper;
+import br.guilycst.jms.model.Pedido;
 
 import javax.jms.*;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.Optional;
 import java.util.Scanner;
 
-public class ConsumerTest {
+public class TopicBroadcastConsumerTest {
 
     public static void main(String[] args) throws Exception {
-        Connection connection = SetupHelper.getConnection();
+        Connection connection = SetupHelper.getConnection(Optional.of("estoque"));
         Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-        Destination queue = SetupHelper.lookup("financeiro");
-        MessageConsumer consumer = session.createConsumer(queue);
+        Topic topic = SetupHelper.lookup("loja");
+        MessageConsumer consumer = session.createDurableSubscriber(topic, "subscriber"); // a durable subscriber recieves messages sent when the consumer was offline
 
         consumer.setMessageListener(new MessageListener() { // observer
             public void onMessage(Message message) {
-                TextMessage textMsg = (TextMessage) message;
+                ObjectMessage msg = (ObjectMessage) message;
                 try {
-                    System.out.println("Msg: "+ textMsg.getText());
+                    System.out.println((Pedido)msg.getObject());
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
